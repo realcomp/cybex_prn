@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <style>
+    .ui.dropdown .menu {
+      max-height: none !important; /* Убираем ограничение высоты */
+    }
+  </style>
 </head>
 <body>
 <div class="ui container">
@@ -113,49 +118,54 @@
       resultDiv.style.display = 'block';
     });
 
-    pdfButton.addEventListener('click', function () {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: 'a4',
-      });
+pdfButton.addEventListener('click', function () {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'landscape',
+    unit: 'pt',
+    format: 'a4',
+  });
 
-      doc.setFont('Helvetica', 'bold');
-      const pageWidth = doc.internal.pageSize.width;
+  // Настройки шрифтов и размеров
+  doc.setFont('Helvetica', 'bold');
+  const pageWidth = doc.internal.pageSize.width;
 
-      // Первая строка
-      doc.setFontSize(74);
-      const modelX = (pageWidth - doc.getTextWidth(modelElement.textContent)) / 2;
-      doc.text(modelElement.textContent, modelX, 150);
+  // Первая строка
+  doc.setFontSize(74);
+  const modelX = (pageWidth - doc.getTextWidth(modelElement.textContent)) / 2;
+  doc.text(modelElement.textContent, modelX, 150);
 
-      // Вторая строка
-      doc.setFontSize(240);
-      const articleX = (pageWidth - doc.getTextWidth(articleElement.textContent)) / 2;
-      doc.text(articleElement.textContent, articleX, 360);
+  // Вторая строка
+  doc.setFontSize(240);
+  const articleX = (pageWidth - doc.getTextWidth(articleElement.textContent)) / 2;
+  doc.text(articleElement.textContent, articleX, 360);
 
-      // Третья строка
-      doc.setFontSize(54);
-      const colorX = (pageWidth - doc.getTextWidth(colorElement.textContent)) / 2;
-      doc.text(colorElement.textContent, colorX, 480);
+  // Третья строка
+  doc.setFontSize(54);
+  const colorX = (pageWidth - doc.getTextWidth(colorElement.textContent)) / 2;
+  doc.text(colorElement.textContent, colorX, 480);
 
-      // Логотип
-      const img = new Image();
-      img.src = '/logo.png';
-      img.onload = function () {
-        const imgWidth = 132;
-        const imgHeight = 49;
-        const x = pageWidth - imgWidth - 50;
-        const y = doc.internal.pageSize.height - imgHeight - 50;
+  // Добавление логотипа
+  const img = new Image();
+  img.src = '/logo.png';
+  img.onload = function () {
+    const imgWidth = 132;
+    const imgHeight = 49;
+    const x = pageWidth - imgWidth - 50;
+    const y = doc.internal.pageSize.height - imgHeight - 50;
 
-        doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
-        doc.save('product-info.pdf');
-      };
+    doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
 
-      img.onerror = function () {
-        alert('Ошибка: Логотип не найден. Проверьте файл logo.png.');
-      };
-    });
+    // Открываем PDF в новой вкладке
+    const pdfBlob = doc.output('blob');
+    const pdfURL = URL.createObjectURL(pdfBlob);
+    window.open(pdfURL); // Открыть PDF в новой вкладке
+  };
+
+  img.onerror = function () {
+    alert('Ошибка: Логотип не найден. Проверьте файл logo.png.');
+  };
+});
   </script>
 </body>
 </html>
