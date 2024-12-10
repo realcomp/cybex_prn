@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор страницы для печати</title>
+</head>
+<body>
+  <h1>Выберите модель</h1>
+  <form id="product-form" action="/generate" method="POST">
+    <label for="model">Модель:</label>
+    <select id="model" name="model">
+      <option value="model1">Модель 1</option>
+      <option value="model2">Модель 2</option>
+      <option value="model3">Модель 3</option>
+    </select>
+
+    <label for="article">Артикул:</label>
+    <input type="text" id="article" name="article" required />
+
+    <label for="color">Цвет:</label>
+    <select id="color" name="color">
+      <option value="red">Красный</option>
+      <option value="blue">Синий</option>
+      <option value="green">Зеленый</option>
+    </select>
+
+    <button type="submit">Сгенерировать</button>
+  </form>
+</body>
+</html>
