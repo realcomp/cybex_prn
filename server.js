@@ -12,11 +12,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Обработка формы
+// Обработка формы (для примера, но мы не используем ее в данном случае)
 app.post('/generate', (req, res) => {
   const { model, article, color } = req.body;
-
-  // Логика генерации страницы для печати
+  
+  // Логика генерации страницы для печати (это делаем на клиенте)
   const printPage = `
     <html>
       <head><title>Страница для печати</title></head>
@@ -28,8 +28,6 @@ app.post('/generate', (req, res) => {
       </body>
     </html>
   `;
-
-  // Отправка страницы для печати
   res.send(printPage);
 });
 
