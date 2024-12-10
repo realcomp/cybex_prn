@@ -3,176 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Генератор страницы для печати</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    h1 {
-      font-size: 24px;
-      color: #333;
-    }
-    form {
-      margin-bottom: 20px;
-    }
-    label, select, input {
-      margin: 10px 0;
-      display: block;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    #result {
-      display: none;
-    }
-  </style>
+  <title>CYBEX Pages Generator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 </head>
 <body>
+  <div class="ui container">
+    <h1 class="ui header">PAGES GENERATOR</h1>
 
-<h1>Генератор страницы для печати</h1>
+    <form id="product-form" class="ui form">
+      <div class="field">
+        <label for="model">MODEL:</label>
+        <select id="model" name="model" class="ui dropdown">
+          <option value="COYA">COYA</option>
+          <option value="PRIAM">PRIAM</option>
+          <option value="MIOS">MIOS</option>
+          <option value="BEEZY">BEEZY</option>
+          <option value="EEZY">EEZY</option>
+          <option value="GAZELLE">GAZELLE</option>
+          <option value="BALIOS">BALIOS</option>
+          <option value="SIRONA">SIRONA</option>
+          <option value="ETHERNIS">ETHERNIS</option>
+          <option value="ORFEO">ORFEO</option>
+          <option value="CLOUD">CLOUD</option>
+          <option value="BASE">BASE</option>
+          <option value="ATON">ATON</option>
+          <option value="SOLUTION">SOLUTION</option>
+          <option value="_______________">_________</option>
+        </select>
+      </div>
 
-<form id="product-form">
-  <label for="model">MODEL:</label>
-  <select id="model" name="model">
-    <option value="COYA">COYA</option>
-    <option value="PRIAM">PRIAM</option>
-    <option value="MIOS">MIOS</option>
-    <option value="BEEZY">BEEZY</option>
-    <option value="EEZY">EEZY</option>
-    <option value="GAZELLE">GAZELLE</option>
-    <option value="BALIOS">BALIOS</option>
-    <option value="SIRONA">SIRONA</option>
-    <option value="ETHERNIS">ETHERNIS</option>
-    <option value="ORFEO">ORFEO</option>
-    <option value="CLOUD">CLOUD</option>
-    <option value="BASE">BASE</option>
-    <option value="ATON">ATON</option>
-    <option value="SOLUTION">SOLUTION</option>
-    <option value="_______________">_________ </option>
-  </select>
+      <div class="field">
+        <label for="article">MACAT:</label>
+        <input type="text" id="article" name="article" placeholder="Введите артикул" required />
+      </div>
 
-  <label for="article">MACAT:</label>
-  <input type="text" id="article" name="article" required />
+      <div class="field">
+        <label for="color">COLOR:</label>
+        <select id="color" name="color" class="ui dropdown">
+          <option value="MATTE BLACK">MATTE BLACK</option>
+          <option value="ROSE GOLD">ROSE GOLD</option>
+          <option value="CHROME BROWN">CHROME BROWN</option>
+          <option value="CHROME BLACK">CHROME BLACK</option>
+          <option value="SEPIA BLACK">SEPIA BLACK</option>
+          <option value="OFF WHITE">OFF WHITE</option>
+          <option value="MANHATTAN BLACK">MANHATTAN BLACK</option>
+          <option value="ALMOND BEIGE">ALMOND BEIGE</option>
+          <option value="FOG GREY">FOG GREY</option>
+          <option value="DEEP BLACK">DEEP BLACK</option>
+          <option value="NAVI BLUE">NAVY BLUE</option>
+          <option value="_________________">____________</option>
+        </select>
+      </div>
 
-  <label for="color">COLOR:</label>
-  <select id="color" name="color">
-    <option value="MATTE BLACK">MATTE BLACK</option>
-    <option value="ROSE GOLD">ROSE GOLD</option>
-    <option value="CHROME BROWN">CHROME BROWN</option>
-    <option value="CHROME BLACK">CHROME BLACK</option>
-    <option value="SEPIA BLACK">SEPIA BLACK</option>
-    <option value="OFF WHITE">OFF WHITE</option>
-    <option value="MANHATTAN BLACK">MANHATTAN BLACK</option>
-    <option value="ALMOND BEIGE">ALMOND BEIGE</option>
-    <option value="FOG GREY">FOG GREY</option>
-    <option value="DEEP BLACK">DEEP BLACK</option>
-    <option value="NAVI BLUE">NAVY BLUE</option>
-    <option value="_________________">____________</option>
-  </select>
+      <button type="submit" class="ui primary button">GENERATE</button>
+    </form>
 
+    <div id="result" class="ui segment" style="display: none;">
+      <h2 class="ui header">GENERATED</h2>
+      <p><strong>MODEL:</strong> <span id="result-model"></span></p>
+      <p><strong>MACAT:</strong> <span id="result-article"></span></p>
+      <p><strong>COLOR:</strong> <span id="result-color"></span></p>
 
-  <button type="submit">GENERATE</button>
-</form>
+      <button id="pdf-btn" class="ui green button">Make PDF</button>
+    </div>
+  </div>
 
-<div id="result">
-  <hr>
-  <h2>GENERATED</h2>
-  <p><strong>MODEL:</strong> <span id="result-model"></span></p>
-  <p><strong>MACAT:</strong> <span id="result-article"></span></p>
-  <p><strong>COLOR:</strong> <span id="result-color"></span></p>
+  <!-- Подключаем библиотеку jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <button id="pdf-btn">Make PDF</button>
-</div>
+  <script>
+    // Инициализация Semantic UI dropdown
+    $('.ui.dropdown').dropdown();
 
-<!-- Подключаем библиотеку jsPDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    // Ваш JavaScript для обработки формы и генерации PDF
+    const form = document.getElementById('product-form');
+    const resultDiv = document.getElementById('result');
+    const modelElement = document.getElementById('result-model');
+    const articleElement = document.getElementById('result-article');
+    const colorElement = document.getElementById('result-color');
+    const pdfButton = document.getElementById('pdf-btn');
 
-<script>
-// Получаем элементы DOM
-const form = document.getElementById('product-form');
-const resultDiv = document.getElementById('result');
-const modelElement = document.getElementById('result-model');
-const articleElement = document.getElementById('result-article');
-const colorElement = document.getElementById('result-color');
-const printButton = document.getElementById('print-btn');
-const pdfButton = document.getElementById('pdf-btn');
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
 
-// Обработка отправки формы
-form.addEventListener('submit', function (event) {
-  event.preventDefault(); // Предотвратить отправку формы
+      // Получаем данные формы
+      const model = document.getElementById('model').value;
+      const article = document.getElementById('article').value;
+      const color = document.getElementById('color').value;
 
-  // Получаем данные из формы
-  const model = document.getElementById('model').value;
-  const article = document.getElementById('article').value;
-  const color = document.getElementById('color').value;
+      // Отображаем данные
+      modelElement.textContent = model;
+      articleElement.textContent = article;
+      colorElement.textContent = color;
 
-  // Отображаем результаты
-  modelElement.textContent = model;
-  articleElement.textContent = article;
-  colorElement.textContent = color;
+      // Показываем результаты
+      resultDiv.style.display = 'block';
+    });
 
-  // Показываем блок с результатами и кнопками
-  resultDiv.style.display = 'block';
-});
+    pdfButton.addEventListener('click', function () {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: 'a4',
+      });
 
-// Создание PDF
-pdfButton.addEventListener('click', function () {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({
-    orientation: 'landscape',
-    unit: 'pt',
-    format: 'a4',
-  });
+      doc.setFont('Helvetica', 'bold');
+      const pageWidth = doc.internal.pageSize.width;
 
-  // Настройки шрифтов и размеров
-  doc.setFont('Helvetica', 'bold');
+      // Первая строка
+      doc.setFontSize(74);
+      const modelX = (pageWidth - doc.getTextWidth(modelElement.textContent)) / 2;
+      doc.text(modelElement.textContent, modelX, 150);
 
-  // Центрирование текста
-  const pageWidth = doc.internal.pageSize.width;
+      // Вторая строка
+      doc.setFontSize(240);
+      const articleX = (pageWidth - doc.getTextWidth(articleElement.textContent)) / 2;
+      doc.text(articleElement.textContent, articleX, 360);
 
-  // Первая строка
-  doc.setFontSize(74);
-  const modelX = (pageWidth - doc.getTextWidth(modelElement.textContent)) / 2;
-  doc.text(modelElement.textContent, modelX, 150); // Смещение по Y скорректировано
+      // Третья строка
+      doc.setFontSize(54);
+      const colorX = (pageWidth - doc.getTextWidth(colorElement.textContent)) / 2;
+      doc.text(colorElement.textContent, colorX, 480);
 
-  // Вторая строка
-  doc.setFontSize(240);
-  const articleX = (pageWidth - doc.getTextWidth(articleElement.textContent)) / 2;
-  doc.text(articleElement.textContent, articleX, 360); // Увеличено расстояние между строками
+      // Логотип
+      const img = new Image();
+      img.src = '/logo.png';
+      img.onload = function () {
+        const imgWidth = 132;
+        const imgHeight = 49;
+        const x = pageWidth - imgWidth - 50;
+        const y = doc.internal.pageSize.height - imgHeight - 50;
 
-  // Третья строка
-  doc.setFontSize(54);
-  const colorX = (pageWidth - doc.getTextWidth(colorElement.textContent)) / 2;
-  doc.text(colorElement.textContent, colorX, 480); // Смещение для третьей строки
+        doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+        doc.save('product-info.pdf');
+      };
 
-  // Добавление логотипа
-  const img = new Image();
-  img.src = '/logo.png'; // Убедитесь, что файл доступен
-  img.onload = function () {
-    const imgWidth = 132; // Ширина логотипа
-    const imgHeight = 49; // Высота логотипа
-    const x = pageWidth - imgWidth - 50; // Отступ от правого края
-    const y = doc.internal.pageSize.height - imgHeight - 50; // Отступ от нижнего края
-
-    // Добавляем логотип
-    doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
-
-    // Сохраняем PDF
-    doc.save('product-info.pdf');
-  };
-
-  img.onerror = function () {
-    alert('Ошибка: Логотип не найден. Проверьте файл logo.png в папке public.');
-  };
-});
-
-
-
-</script>
-
+      img.onerror = function () {
+        alert('Ошибка: Логотип не найден. Проверьте файл logo.png.');
+      };
+    });
+  </script>
 </body>
 </html>
