@@ -10,6 +10,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.21.2"
+    "@mapbox/node-pre-gyp": "^1.0.11",
+    "express": "^4.21.2",
+    "ipp": "^1.1.0",
+    "node-gyp": "^11.0.0",
+    "pdfkit": "^0.15.2"
   }
 }

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <title>CYBEX Pages Generator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+  <style>
+    .ui.dropdown .menu {
+      max-height: none !important; /* Убираем ограничение высоты */
+    }
+  </style>
+</head>
+<body>
+<div class="ui container">
+  <h1 class="ui header">PAGES GENERATOR</h1>
+
+  <form id="product-form" class="ui form" method="POST" action="/print">
+    <div class="ui stackable grid">
+      <!-- Модель -->
+      <div class="eight wide column">
+        <div class="field">
+          <label for="model">MODEL:</label>
+          <select id="model" name="model" class="ui fluid dropdown" required>
+            <option value="ATON">ATON</option>
+            <option value="BALIOS">BALIOS</option>
+            <option value="BASE">BASE</option>
+            <option value="BEEZY">BEEZY</option>
+            <option value="CLOUD">CLOUD</option>
+            <option value="COYA">COYA</option>
+            <option value="EEZY">EEZY</option>
+            <option value="ETHERNIS">ETHERNIS</option>
+            <option value="GAZELLE">GAZELLE</option>
+            <option value="MIOS">MIOS</option>
+            <option value="ORFEO">ORFEO</option>
+            <option value="PRIAM">PRIAM</option>
+            <option value="SIRONA">SIRONA</option>
+            <option value="SOLUTION">SOLUTION</option>
+            <option value="_">_________</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Цвет -->
+      <div class="eight wide column">
+        <div class="field">
+          <label for="color">COLOR:</label>
+          <select id="color" name="color" class="ui fluid dropdown" required>
+            <option value="ALMOND BEIGE">ALMOND BEIGE</option>
+            <option value="CHROME BLACK">CHROME BLACK</option>
+            <option value="CHROME BROWN">CHROME BROWN</option>
+            <option value="COTTON WHITE">COTTON WHITE</option>
+            <option value="COZY BEIGE">COZY BEIGE</option>
+            <option value="DARK BLUE">DARK BLUE</option>
+            <option value="DEEP BLACK">DEEP BLACK</option>
+            <option value="FLOWERS BEIGE">FLOWERS BEIGE</option>
+            <option value="FLOWERS PINK">FLOWERS PINK</option>
+            <option value="FOG GREY">FOG GREY</option>
+            <option value="JEREMY SCOTT BLACK">JEREMY SCOTT BLACK</option>
+            <option value="LAVA GREY">LAVA GREY</option>
+            <option value="LAVASTONE BLACK">LAVASTONE BLACK</option>
+            <option value="LEAF GREEN">LEAF GREEN</option>
+            <option value="MANHATTAN BLACK">MANHATTAN BLACK</option>
+            <option value="MATT BLACK">MATT BLACK</option>
+            <option value="MIRAGE GREY">MIRAGE GREY</option>
+            <option value="MONUMENT GREY">MONUMENT GREY</option>
+            <option value="MOON BLACK">MOON BLACK</option>
+            <option value="NAVI BLUE">NAVY BLUE</option>
+            <option value="OCEAN BLUE">OCEAN BLUE</option>
+            <option value="OFF WHITE">OFF WHITE</option>
+            <option value="ONE LOVE">ONE LOVE</option>
+            <option value="PEACH PINK">PEACH PINK</option>
+            <option value="PEPPER BLACK">PEPPER BLACK</option>
+            <option value="ROSE GOLD">ROSE GOLD</option>
+            <option value="ROSENROT RED">ROSENROT RED</option>
+            <option value="SEASHELL BEIGE">SEASHELL BEIGE</option>
+            <option value="SEPIA BLACK">SEPIA BLACK</option>
+            <option value="SKY BLUE">SKY BLUE</option>
+            <option value="SOHO GREY">SOHO GREY</option>
+            <option value="STEEL GREY">STEEL GREY</option>
+            <option value="VOLCANO BLACK">VOLCANO BLACK</option>
+            <option value="_">_________</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Артикул -->
+      <div class="eight wide column">
+        <div class="field">
+          <label for="article">MACAT:</label>
+          <input type="text" id="article" name="article" placeholder="4 last digits" maxlength="4" pattern="\d{4}" required>
+        </div>
+      </div>
+
+      <!-- Количество -->
+      <div class="eight wide column">
+        <div class="field">
+          <label for="items">NUMBER OF ITEMS:</label>
+          <input type="number" id="items" name="items" placeholder="Enter quantity" min="1" max="1000">
+        </div>
+      </div>
+
+      <!-- IP Принтера -->
+      <div class="eight wide column">
+        <div class="field">
+          <label for="printerIp">PRINTER IP:</label>
+          <input type="text" id="printerIp" name="printerIp" placeholder="192.168.1.100" required>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="ui primary fluid button">Print</button>
+  </form>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async function () {
+    const printerIpInput = document.getElementById('printerIp');
+
+    // Инициализация Semantic UI dropdown
+    $('.ui.dropdown').dropdown();
+
+    // Запрос последнего IP с сервера
+    try {
+      const response = await fetch('/last-printer-ip');
+      const data = await response.json();
+      if (data.printerIp) {
+        printerIpInput.value = data.printerIp;
+      }
+    } catch (error) {
+      console.error('Failed to fetch last printer IP:', error);
+    }
+
+    // Сохранение текущего IP-адреса при отправке формы
+    const form = document.getElementById('product-form');
+    form.addEventListener('submit', () => {
+      const ipValue = printerIpInput.value.trim();
+      if (ipValue) {
+        fetch('/last-printer-ip', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ printerIp: ipValue }),
+        }).catch((error) => console.error('Failed to save printer IP:', error));
+      }
+    });
+  });
+</script>
+</body>
+</html>

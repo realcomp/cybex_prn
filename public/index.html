@@ -65,7 +65,7 @@
             <option value="LEAF GREEN">LEAF GREEN</option>
             <option value="MANHATTAN BLACK">MANHATTAN BLACK</option>
             <option value="MATT BLACK">MATT BLACK</option>
-            <option value="MIRAGE GREY">CHROME BROWN</option>
+            <option value="MIRAGE GREY">MIRAGE GREY</option>
             <option value="MONUMENT GREY">MONUMENT GREY</option>
             <option value="MOON BLACK">MOON BLACK</option>
             <option value="NAVI BLUE">NAVY BLUE</option>
@@ -81,36 +81,48 @@
             <option value="SKY BLUE">SKY BLUE</option>
             <option value="SOHO GREY">SOHO GREY</option>
             <option value="STEEL GREY">STEEL GREY</option>            
-            <option value="VOLCANO BLACK">VOLCANO BLAC</option>
+            <option value="VOLCANO BLACK">VOLCANO BLACK</option>
             <option value="_">_________</option>
           </select>
         </div>
       </div>
-    </div>
 
-          <!-- Артикул -->
+      <!-- Артикул -->
       <div class="eight wide column">
         <div class="field">
-           <label for="article">MACAT:</label>
-    <input 
-    type="text" 
-    id="article" 
-    name="article" 
-    placeholder="4 last digits" 
-    maxlength="4" 
-    pattern="\d{4}" 
-    required 
-    title="Only 4 digits!"
-  />
-</div>
+          <label for="article">MACAT:</label>
+          <input 
+            type="text" 
+            id="article" 
+            name="article" 
+            placeholder="4 last digits" 
+            maxlength="4" 
+            pattern="\d{4}" 
+            required 
+            title="Only 4 digits!"
+          />
+        </div>
       </div>
 
-<br><br>
+      <!-- Количество -->
+      <div class="eight wide column">
+        <div class="field">
+ <input 
+  type="number" 
+  id="items" 
+  name="items" 
+  placeholder="1-1000" 
+  min="1" 
+  max="1000" 
+  title="Enter a number between 1 and 1000"
+/>
+        </div>
+      </div>
+    </div>
+
     <button type="submit" class="ui primary fluid button">GENERATE</button>
   </form>
 
-
-    
   <div class="ui stackable grid">
     <div class="sixteen wide column">
       <div id="result" class="ui segment" style="display: none;">
@@ -118,6 +130,7 @@
         <p><strong>MODEL:</strong> <span id="result-model"></span></p>
         <p><strong>MACAT:</strong> <span id="result-article"></span></p>
         <p><strong>COLOR:</strong> <span id="result-color"></span></p>
+        <p><strong>NUMBER OF ITEMS:</strong> <span id="result-items"></span></p>
 
         <button id="pdf-btn" class="ui green button">Make PDF</button>
       </div>
@@ -125,37 +138,40 @@
   </div>
 </div>
 
-  <!-- Подключаем библиотеку jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Подключаем библиотеку jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <script>
-    // Инициализация Semantic UI dropdown
-    $('.ui.dropdown').dropdown();
+<script>
+  // Инициализация Semantic UI dropdown
+  $('.ui.dropdown').dropdown();
 
-    // Ваш JavaScript для обработки формы и генерации PDF
-    const form = document.getElementById('product-form');
-    const resultDiv = document.getElementById('result');
-    const modelElement = document.getElementById('result-model');
-    const articleElement = document.getElementById('result-article');
-    const colorElement = document.getElementById('result-color');
-    const pdfButton = document.getElementById('pdf-btn');
+  const form = document.getElementById('product-form');
+  const resultDiv = document.getElementById('result');
+  const modelElement = document.getElementById('result-model');
+  const articleElement = document.getElementById('result-article');
+  const colorElement = document.getElementById('result-color');
+  const itemsElement = document.getElementById('result-items');
+  const pdfButton = document.getElementById('pdf-btn');
 
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
 
-      // Получаем данные формы
-      const model = document.getElementById('model').value;
-      const article = document.getElementById('article').value;
-      const color = document.getElementById('color').value;
+    const model = document.getElementById('model').value;
+    const article = document.getElementById('article').value;
+    const color = document.getElementById('color').value;
+    const items = document.getElementById('items').value; // Получаем значение из поля ввода
+    const itemsText = items.trim() !== '' ? items : ' '; // Если пусто, подставляем " "
 
-      // Отображаем данные
-      modelElement.textContent = model;
-      articleElement.textContent = article;
-      colorElement.textContent = color;
 
-      // Показываем результаты
-      resultDiv.style.display = 'block';
-    });
+    // Отображаем данные
+    modelElement.textContent = model;
+    articleElement.textContent = article;
+    colorElement.textContent = color;
+    itemsElement.textContent = items ? items : 'N/A';
+
+    // Показываем результаты
+    resultDiv.style.display = 'block';
+  });
 
 pdfButton.addEventListener('click', function () {
   const { jsPDF } = window.jspdf;
@@ -165,26 +181,43 @@ pdfButton.addEventListener('click', function () {
     format: 'a4',
   });
 
-  // Настройки шрифтов и размеров
   doc.setFont('Helvetica', 'bold');
   const pageWidth = doc.internal.pageSize.width;
 
-  // Первая строка
+  // Название модели
   doc.setFontSize(74);
   const modelX = (pageWidth - doc.getTextWidth(modelElement.textContent)) / 2;
   doc.text(modelElement.textContent, modelX, 80);
 
-  // Вторая строка
+  // Артикул
   doc.setFontSize(280);
   const articleX = (pageWidth - doc.getTextWidth(articleElement.textContent)) / 2;
   doc.text(articleElement.textContent, articleX, 360);
 
-  // Третья строка
+  // Цвет
   doc.setFontSize(54);
   const colorX = (pageWidth - doc.getTextWidth(colorElement.textContent)) / 2;
   doc.text(colorElement.textContent, colorX, 480);
 
-  // Добавление логотипа
+  // Количество
+  const items = document.getElementById('items').value.trim(); // Получаем значение
+  if (items) {
+    const itemsFontSize = 54; // Размер шрифта для количества
+    doc.setFontSize(itemsFontSize);
+    const itemsWidth = doc.getTextWidth(items) + 30; // Ширина блока
+    const itemsHeight = 70; // Высота блока
+    const itemsX = (pageWidth - itemsWidth) / 2; // Центрирование блока
+    const itemsY = doc.internal.pageSize.height - itemsHeight - 20; // Положение блока
+
+    doc.setFillColor(0, 0, 0); // Черный фон
+    doc.rect(itemsX, itemsY, itemsWidth, itemsHeight, 'F'); // Рисуем блок
+    doc.setTextColor(255, 255, 255); // Белый текст
+    const textX = itemsX + itemsWidth / 2 - doc.getTextWidth(items) / 2; // Центрирование текста
+    const textY = itemsY + itemsHeight / 2 + itemsFontSize / 4; // Центрирование текста по вертикали
+    doc.text(items, textX, textY); // Отрисовка текста
+  }
+
+  // Логотип
   const img = new Image();
   img.src = '/logo.png';
   img.onload = function () {
@@ -195,16 +228,18 @@ pdfButton.addEventListener('click', function () {
 
     doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
 
-    // Открываем PDF в новой вкладке
     const pdfBlob = doc.output('blob');
     const pdfURL = URL.createObjectURL(pdfBlob);
-    window.open(pdfURL); // Открыть PDF в новой вкладке
+    window.open(pdfURL);
   };
 
   img.onerror = function () {
     alert('Ошибка: Логотип не найден. Проверьте файл logo.png.');
   };
 });
-  </script>
+
+
+
+</script>
 </body>
 </html>

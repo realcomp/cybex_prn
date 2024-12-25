@@ -14,8 +14,8 @@ app.get('/', (req, res) => {
 
 // Обработка формы (для примера, но мы не используем ее в данном случае)
 app.post('/generate', (req, res) => {
-  const { model, article, color } = req.body;
-  
+  const { model, article, color, items } = req.body;
+
   // Логика генерации страницы для печати (это делаем на клиенте)
   const printPage = `
     <html>
@@ -25,6 +25,7 @@ app.post('/generate', (req, res) => {
         <p>Модель: ${model}</p>
         <p>Артикул: ${article}</p>
         <p>Цвет: ${color}</p>
+        <p>Количество: ${items ? items : 'N/A'}</p>
       </body>
     </html>
   `;
